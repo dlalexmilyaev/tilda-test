@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест postMessage для Storyline</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 500px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+            border-radius: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: bold;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        #helloBtn {
+            background: #4CAF50;
+            color: white;
+        }
+        #howBtn {
+            background: #2196F3;
+            color: white;
+        }
+        .status {
+            margin-top: 30px;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #666;
+            transition: all 0.3s;
+        }
+        .info {
+            margin-top: 20px;
+            padding: 10px;
+            background: #e3f2fd;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #1976d2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📬 Тест postMessage</h1>
+        <p>Нажмите на кнопку, чтобы отправить слово в родительское окно:</p>
+        <div class="buttons">
+            <button id="helloBtn">👋 Привет</button>
+            <button id="howBtn">❓ Как дела?</button>
+        </div>
+        <div class="status" id="status">
+            💡 Готов к отправке сообщений
+        </div>
+        <div class="info">
+            🔍 Открыть консоль (F12) чтобы увидеть отправленные сообщения
+        </div>
+    </div>
+
+    <script>
+        // Функция отправки сообщения родительскому окну
+        function sendMessageToParent(word) {
+            if (window.parent !== window) {
+                // Отправляем сообщение родителю
+                window.parent.postMessage(word, '*');
+                console.log(`📤 [Дочернее окно] Отправлено родителю: "${word}"`);
+                
+                // Показываем статус
+                const statusDiv = document.getElementById('status');
+                statusDiv.innerHTML = `✅ Отправлено: "${word}"`;
+                statusDiv.style.background = '#d4edda';
+                statusDiv.style.color = '#155724';
+                setTimeout(() => {
+                    statusDiv.innerHTML = '💡 Готов к отправке сообщений';
+                    statusDiv.style.background = '#f5f5f5';
+                    statusDiv.style.color = '#666';
+                }, 2000);
+            } else {
+                console.log('⚠️ Страница не внутри iframe');
+                alert(`Нажата кнопка: "${word}"\n\n(Страница не в iframe, поэтому сообщение не отправлено)`);
+            }
+        }
+
+        // Вешаем обработчики на кнопки
+        document.getElementById('helloBtn').addEventListener('click', () => {
+            sendMessageToParent('Привет');
+        });
+
+        document.getElementById('howBtn').addEventListener('click', () => {
+            sendMessageToParent('Как дела?');
+        });
+
+        console.log('✅ Страница загружена, кнопки работают');
+        console.log('🌐 URL страницы:', window.location.href);
+    </script>
+</body>
+</html>
